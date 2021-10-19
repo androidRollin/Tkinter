@@ -50,7 +50,6 @@ class App(tk.Tk):
         self.button_submit = Button(self.form_frame, text="Submit", command=self.checkInputs, width=15)
         self.button_submit.grid(row=6, columnspan=2, pady=2)
 
-
         self.set_inputs()
         self.form_frame.grid()
         self.form_frame.tkraise()
@@ -63,16 +62,42 @@ class App(tk.Tk):
         # self.progress_frame.rowconfigure(0, weight=1)
 
         # progressbar
+
+        # Dummy data
+
+        self.dummy = ttk.Label(self.progress_frame, text="")
+        self.dummy.grid(row=0)
+
+        self.dummy = ttk.Label(self.progress_frame, text="")
+        self.dummy.grid(row=1)
+
+        self.dummy = ttk.Label(self.progress_frame, text="")
+        self.dummy.grid(row=2)
+
+        self.dummy = ttk.Label(self.progress_frame, text="")
+        self.dummy.grid(row=3)
+
+        self.dummy = ttk.Label(self.progress_frame, text="")
+        self.dummy.grid(row=4)
+
+        self.dummy = ttk.Label(self.progress_frame, text="")
+        self.dummy.grid(row=5)
+
+        # Center the Loading Bar
         self.pb = ttk.Progressbar(self.progress_frame, orient=tk.HORIZONTAL, mode='indeterminate')
-        self.pb.grid(row=0, column = 0)
+        self.pb.grid(row=6, columnspan=2)
 
-        self.l_loading_status = ttk.Label(self.progress_frame, text="Feeding the data into the model...")
-        self.l_loading_status.grid(row=1, rowspan = 2 )
+        # Dummy data
+        self.dummy = ttk.Label(self.progress_frame, text="10%")
+        self.dummy.grid(row=7)
 
-        self.progress_frame.rowconfigure(0, weight=1)
-        self.l_loading_status.rowconfigure(1, weight=1)
-        self.progress_frame.grid_columnconfigure(0, weight=1)
+        self.loading_status = ttk.Label(self.progress_frame, text="  Feeding the data into the model...")
+        self.loading_status.grid(row=8)
 
+        self.progress_frame.columnconfigure(0, weight=1)
+
+        # self.progress_frame.rowconfigure(0, weight=1)
+        # self.progress_frame.grid_columnconfigure(0, weight=1)
 
     def checkInputs(self):
         latitude = self.e_ev_latitude.get()
@@ -114,10 +139,9 @@ class App(tk.Tk):
 
     def start_processing(self):
         # place the progress frame
+        self.progress_frame.grid(row=0, column=0, sticky=tk.NSEW)
         self.progress_frame.tkraise()
         self.pb.start(10)
-        self.progress_frame.grid(row=0, column=0, sticky=tk.NSEW)
-
 
     def set_inputs(self):
         self.e_ev_latitude.insert(0, -90)
