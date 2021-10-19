@@ -80,7 +80,7 @@ def checkDepth(depth):
 
 def checkTestimonies(num_testimonies):
     num_testimonies = int(num_testimonies)
-    print(str(num_testimonies))
+    #print(str(num_testimonies))
     if num_testimonies <= 0:
         messagebox.showerror("DOST-PHIVOLCS (Error)", "Testimony number must be a positive and non-zero number")
         return 1

@@ -1,6 +1,35 @@
+import threading
 import tkinter as tk
 from formfunctions import *
 from tkinter import ttk
+from threading import Thread
+
+
+class RandomForestMachineLearningThread(Thread):
+    def __init__(self, latitude, longitude, magnitude, depth, num_testimonies, loading_status):
+        super().__init__()
+        self.latitude = latitude
+        self.longitude = longitude
+        self.magnitude = magnitude
+        self.depth = depth
+        self.num_testimonies = num_testimonies
+        self.loading_status = loading_status
+        print("Hello Machine Learning")
+
+    def run(self):
+        self.loading_status.configure(text="Loading Models and Preprocessing Data")
+        import randomforestml as rf
+        ev1 = rf.RandomForest(self.latitude, self.longitude, self.magnitude, self.depth, self.num_testimonies)
+        ev1.get_all_points_in_box_map()
+        ev1.create_dataframe()
+        ev1.get_distance_from_ev_to_insert_in_df()
+        print("In here")
+        self.loading_status.configure(text="Determining and Filtering land area points in the map")
+        ev1.filter_land_coordinates()
+        self.loading_status.configure(text="  Intensity One model is predicting intensity one coordinates")
+        ev1.predict_intensity_I()
+        self.loading_status.configure(text="  Intensity One coordinates, predicted")
+
 
 
 class App(tk.Tk):
@@ -47,7 +76,7 @@ class App(tk.Tk):
         self.e_ev_depth.grid(row=4, column=1, pady=2)
         self.e_ev_num_testimonies.grid(row=5, column=1, pady=2)
 
-        self.button_submit = Button(self.form_frame, text="Submit", command=self.checkInputs, width=15)
+        self.button_submit = Button(self.form_frame, text="Submit", command=self.handle_machine_learning_rf, width=15)
         self.button_submit.grid(row=6, columnspan=2, pady=2)
 
         self.set_inputs()
@@ -99,7 +128,22 @@ class App(tk.Tk):
         # self.progress_frame.rowconfigure(0, weight=1)
         # self.progress_frame.grid_columnconfigure(0, weight=1)
 
-    def checkInputs(self):
+    def handle_machine_learning_rf(self):
+        if self.check_inputs() == 1:
+            return
+        else:
+            progress_bar_thread = self.display_progress_bar
+            t1 = threading.Thread(target=progress_bar_thread)
+            t1.start()
+            machine_learning_thread = RandomForestMachineLearningThread(self.e_ev_latitude.get(),
+                                                                        self.e_ev_longitude.get(),
+                                                                        self.e_ev_mag_value.get(),
+                                                                        self.e_ev_depth.get(),
+                                                                        self.e_ev_num_testimonies.get(),
+                                                                        self.loading_status)
+            machine_learning_thread.start()
+
+    def check_inputs(self):
         latitude = self.e_ev_latitude.get()
         longitude = self.e_ev_longitude.get()
         magnitude = self.e_ev_mag_value.get()
@@ -134,21 +178,34 @@ class App(tk.Tk):
                                 if res == 1:
                                     return
                                 else:
-                                    print("Pass")
-                                    self.start_processing()
+                                    return 0
+                                    # machine_learning_thread = self.random_forest_learn()
+                                    # t1 = threading.Thread(target=machine_learning_thread)
+                                    # t1.start()
+                                    # self.monitor(t1)
 
-    def start_processing(self):
+    def monitor(self, download_thread):
+        """ Monitor the download thread """
+        if download_thread.is_alive():
+            self.after(100, lambda: self.monitor(download_thread))
+        else:
+            pass
+            print("end")
+            # self.stop_downloading()
+            # self.set_picture(download_thread.picture_file)
+
+    def display_progress_bar(self):
         # place the progress frame
         self.progress_frame.grid(row=0, column=0, sticky=tk.NSEW)
         self.progress_frame.tkraise()
         self.pb.start(10)
 
     def set_inputs(self):
-        self.e_ev_latitude.insert(0, -90)
-        self.e_ev_longitude.insert(0, 180)
-        self.e_ev_mag_value.insert(0, 9.5)
-        self.e_ev_depth.insert(0, 500)
-        self.e_ev_num_testimonies.insert(0, 50)
+        self.e_ev_latitude.insert(0, 13.82)
+        self.e_ev_longitude.insert(0, 120.35)
+        self.e_ev_mag_value.insert(0, 5.7)
+        self.e_ev_depth.insert(0, 66)
+        self.e_ev_num_testimonies.insert(0, 515)
 
 
 if __name__ == "__main__":
