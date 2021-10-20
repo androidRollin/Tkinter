@@ -17,19 +17,45 @@ class RandomForestMachineLearningThread(Thread):
         print("Hello Machine Learning")
 
     def run(self):
-        self.loading_status.configure(text="Loading Models and Preprocessing Data")
+        self.loading_status.configure(text="  Pre-processing and Loading Random Forest Models")
         import randomforestml as rf
         ev1 = rf.RandomForest(self.latitude, self.longitude, self.magnitude, self.depth, self.num_testimonies)
         ev1.get_all_points_in_box_map()
         ev1.create_dataframe()
         ev1.get_distance_from_ev_to_insert_in_df()
         print("In here")
-        self.loading_status.configure(text="Determining and Filtering land area points in the map")
+        self.loading_status.configure(text="  Determining land area points in the map")
         ev1.filter_land_coordinates()
-        self.loading_status.configure(text="  Intensity One model is predicting intensity one coordinates")
-        ev1.predict_intensity_I()
-        self.loading_status.configure(text="  Intensity One coordinates, predicted")
+        self.loading_status.configure(text="""  Classifying/Predicting "Not Felt" Intensity I coordinates """)
+        ev1.predict_intensity_i()
+        # self.loading_status.configure(text="""  Classifying/Predicting "Weak" Intensity II coordinates """)
+        # ev1.predict_intensity_ii()
+        # self.loading_status.configure(text="""  Classifying/Predicting "Weak" Intensity III coordinates """)
+        # ev1.predict_intensity_iii()
+        self.loading_status.configure(text="""  Classifying/Predicting "Light" Intensity IV coordinates """)
+        ev1.predict_intensity_iv()
+        import mapping as mp
+        upper_corner_lat = getattr(ev1, 'upper_corner_lat')
+        lower_corner_lat = getattr(ev1, 'lower_corner_lat')
+        upper_corner_long = getattr(ev1, 'upper_corner_long')
+        lower_corner_long = getattr(ev1, 'lower_corner_long')
+        e_latitude = getattr(ev1, 'e_latitude')
+        e_longitude = getattr(ev1, 'e_longitude')
+        e_mag_value = getattr(ev1, 'e_mag_value')
+        e_depth = getattr(ev1, 'e_depth')
+        df_i = getattr(ev1, 'dfI')
+        # df_ii = getattr(ev1, 'dfII')
+        # df_iii = getattr(ev1, 'dfIII')
+        df_iv = getattr(ev1, 'dfIV')
+        self.loading_status.configure(text="""  Determining cities included in the map """)
+        ev_map = mp.Map(upper_corner_lat, lower_corner_lat, upper_corner_long, lower_corner_long,
+                        e_latitude, e_longitude, e_mag_value, e_depth, df_i, df_iv)
+        # , df_ii, df_iii, df_iv
 
+        ev_map.determine_cities_included_in_map()
+        self.loading_status.configure(text="""  Mapping the earthquake event """)
+        ev_map.map_earthquake_event()
+        self.loading_status.configure(text="""  Finish Mapping """)
 
 
 class App(tk.Tk):
