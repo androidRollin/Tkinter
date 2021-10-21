@@ -14,10 +14,10 @@ class Map:
                  e_longitude,
                  e_mag_value,
                  e_depth,
-                 dfI
-                 # dfII,
-                 # dfIII,
-                 ,dfIV
+                 dfI,
+                 dfII,
+                 dfIII,
+                 dfIV
                  ):
         # Map Points
         self.lower_corner_lat = lower_corner_lat
@@ -29,8 +29,8 @@ class Map:
         self.e_mag_value = float(e_mag_value)
         self.e_depth = float(e_depth)
         self.dfI = dfI
-        # self.dfII = dfII
-        # self.dfIII = dfIII
+        self.dfII = dfII
+        self.dfIII = dfIII
         self.dfIV = dfIV
         self.df_ph_city_filter = pd.DataFrame(data=None, columns=['a'])
         print(self.dfI)
@@ -54,6 +54,14 @@ class Map:
                urcrnrlon=self.upper_corner_long,
                resolution='h')
 
+        marker_size = 28
+        intensity_I_color = "whitesmoke"
+        intensity_II_color = "#DFE6FE"
+        intensity_III_color = "#82F9FB"
+        intensity_IV_color = "#7EFBDF"
+
+
+
         m.drawcountries(color='red')
         m.drawstates(color='blue')
         # m.drawcounties(color='orange')
@@ -72,22 +80,22 @@ class Map:
         # m.plot(xpt, ypt,'g^', markersize=15)
 
         # Earthquake Intensity III, 63.6% Accurracy
-        # xpt, ypt = m(self.dfIII['pt_longitude'], self.dfIII['pt_latitude'])
-        # m.plot(xpt, ypt, '.', markersize=24, color="#82F9FB", alpha=0.636, label='III')
-        #
-        # # Earthquake Intensity II, 70.6% Accurracy
-        # xpt, ypt = m(self.dfII['pt_longitude'], self.dfII['pt_latitude'])
-        # m.plot(xpt, ypt, '.', markersize=24, color="#DFE6FE", alpha=0.706, label='II')
-        #
+        xpt, ypt = m(self.dfIII['pt_longitude'], self.dfIII['pt_latitude'])
+        m.plot(xpt, ypt, '.', markersize=marker_size, color=intensity_III_color, alpha=0.636, label='III')
+
+        # Earthquake Intensity II, 70.6% Accurracy
+        xpt, ypt = m(self.dfII['pt_longitude'], self.dfII['pt_latitude'])
+        m.plot(xpt, ypt, '.', markersize=marker_size, color=intensity_II_color, alpha=0.706, label='II')
+
 
         # Earthquake Intensity IV, 74.2% Accurracy
         xpt, ypt = m(self.dfIV['pt_longitude'], self.dfIV['pt_latitude'])
-        m.plot(xpt, ypt, '.', markersize=24, color="#7EFBDF", alpha=0.742, label='IV')
+        m.plot(xpt, ypt, '.', markersize=marker_size, color=intensity_IV_color, alpha=0.742, label='IV')
 
         # Earthquake Intensity I, 76.5 Accurracy
         xpt, ypt = m(self.dfI['pt_longitude'], self.dfI['pt_latitude'])
         # m.plot(xpt, ypt, '.', markersize=24, color="whitesmoke", alpha=0.765, label='I')
-        m.plot(xpt, ypt, '.', markersize=24, color="whitesmoke", alpha=1, label='I')
+        m.plot(xpt, ypt, '.', markersize=marker_size, color=intensity_I_color, alpha=1, label='I')
 
         xpt, ypt = m(self.df_ph_city_filter['lng'], self.df_ph_city_filter['lat'])
         city_name = self.df_ph_city_filter['city']
@@ -124,7 +132,7 @@ class Map:
                         rotation=45)
         # np.arange(start, stop, step)
 
-        plt.legend(prop={'size': 35}, loc='upper center', bbox_to_anchor=(0.5, -0.90),
+        plt.legend(prop={'size': 35}, loc='upper center', bbox_to_anchor=(0.5, -0.109),
                    fancybox=True, shadow=True, ncol=5, facecolor='white', framealpha=1.0)
 
         plt.title('Earthquake Intensity', y=1.08, fontsize=50)

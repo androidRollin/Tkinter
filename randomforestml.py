@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 
 
 intensity_I_model = joblib.load('model/intensityOne.joblib')
-# intensity_II_model = joblib.load('model/intensityTwo.joblib')
-# intensity_III_model = joblib.load('model/intensityThree.joblib')
+intensity_II_model = joblib.load('model/intensityTwo.joblib')
+intensity_III_model = joblib.load('model/intensityThree.joblib')
 intensity_IV_model = joblib.load('model/intensityFour.joblib')
 
 
@@ -120,30 +120,30 @@ class RandomForest:
                                                                 x['t_epicenter_distance_km']]])
         return x['intensity_prediction'][0]
 
-    # @staticmethod
-    # def func_model_intensity_ii(x):
-    #     x['intensity_prediction'] = intensity_II_model.predict([[x['ev_latitude'],
-    #                                                              x['ev_longitude'],
-    #                                                              x['ev_mag_value'],
-    #                                                              x['ev_depth'],
-    #                                                              x['e_num_testimonies'],
-    #                                                              x['pt_longitude'],
-    #                                                              x['pt_latitude'],
-    #                                                              x['t_epicenter_distance_km']]])
-    #     return x['intensity_prediction'][0]
-    #
-    # @staticmethod
-    # def func_model_intensity_iii(x):
-    #     x['intensity_prediction'] = intensity_III_model.predict([[x['ev_latitude'],
-    #                                                               x['ev_longitude'],
-    #                                                               x['ev_mag_value'],
-    #                                                               x['ev_depth'],
-    #                                                               x['e_num_testimonies'],
-    #                                                               x['pt_longitude'],
-    #                                                               x['pt_latitude'],
-    #                                                               x['t_epicenter_distance_km']]])
-    #     return x['intensity_prediction'][0]
-    #
+    @staticmethod
+    def func_model_intensity_ii(x):
+        x['intensity_prediction'] = intensity_II_model.predict([[x['ev_latitude'],
+                                                                 x['ev_longitude'],
+                                                                 x['ev_mag_value'],
+                                                                 x['ev_depth'],
+                                                                 x['e_num_testimonies'],
+                                                                 x['pt_longitude'],
+                                                                 x['pt_latitude'],
+                                                                 x['t_epicenter_distance_km']]])
+        return x['intensity_prediction'][0]
+
+    @staticmethod
+    def func_model_intensity_iii(x):
+        x['intensity_prediction'] = intensity_III_model.predict([[x['ev_latitude'],
+                                                                  x['ev_longitude'],
+                                                                  x['ev_mag_value'],
+                                                                  x['ev_depth'],
+                                                                  x['e_num_testimonies'],
+                                                                  x['pt_longitude'],
+                                                                  x['pt_latitude'],
+                                                                  x['t_epicenter_distance_km']]])
+        return x['intensity_prediction'][0]
+
 
     @staticmethod
     def func_model_intensity_iv(x):

@@ -6,7 +6,7 @@ from threading import Thread
 
 
 class RandomForestMachineLearningThread(Thread):
-    def __init__(self, latitude, longitude, magnitude, depth, num_testimonies, loading_status):
+    def __init__(self, latitude, longitude, magnitude, depth, num_testimonies, loading_status, percentage_progress):
         super().__init__()
         self.latitude = latitude
         self.longitude = longitude
@@ -14,25 +14,33 @@ class RandomForestMachineLearningThread(Thread):
         self.depth = depth
         self.num_testimonies = num_testimonies
         self.loading_status = loading_status
+        self.percentage_progress = percentage_progress
         print("Hello Machine Learning")
 
     def run(self):
-        self.loading_status.configure(text="  Pre-processing and Loading Random Forest Models")
+        self.percentage_progress.configure(text="10%")
+        self.loading_status.configure(text="  Loading Random Forest Models...")
         import randomforestml as rf
+        self.percentage_progress.configure(text="20%")
+        self.loading_status.configure(text="  Processing coordinates in the map...")
         ev1 = rf.RandomForest(self.latitude, self.longitude, self.magnitude, self.depth, self.num_testimonies)
         ev1.get_all_points_in_box_map()
         ev1.create_dataframe()
         ev1.get_distance_from_ev_to_insert_in_df()
-        print("In here")
-        self.loading_status.configure(text="  Determining land area points in the map")
+        self.percentage_progress.configure(text="30%")
+        self.loading_status.configure(text="  Determining land area points in the map...")
         ev1.filter_land_coordinates()
-        self.loading_status.configure(text="""  Classifying/Predicting "Not Felt" Intensity I coordinates """)
+        self.percentage_progress.configure(text="40%")
+        self.loading_status.configure(text="""  Classifying/Predicting "Not Felt" Intensity I coordinates...""")
         ev1.predict_intensity_i()
-        # self.loading_status.configure(text="""  Classifying/Predicting "Weak" Intensity II coordinates """)
-        # ev1.predict_intensity_ii()
-        # self.loading_status.configure(text="""  Classifying/Predicting "Weak" Intensity III coordinates """)
-        # ev1.predict_intensity_iii()
-        self.loading_status.configure(text="""  Classifying/Predicting "Light" Intensity IV coordinates """)
+        self.percentage_progress.configure(text="50%")
+        self.loading_status.configure(text="""  Classifying/Predicting "Weak" Intensity II coordinates...""")
+        ev1.predict_intensity_ii()
+        self.percentage_progress.configure(text="60%")
+        self.loading_status.configure(text="""  Classifying/Predicting "Weak" Intensity III coordinates...""")
+        ev1.predict_intensity_iii()
+        self.percentage_progress.configure(text="70%")
+        self.loading_status.configure(text="""  Classifying/Predicting "Light" Intensity IV coordinates...""")
         ev1.predict_intensity_iv()
         import mapping as mp
         upper_corner_lat = getattr(ev1, 'upper_corner_lat')
@@ -44,18 +52,18 @@ class RandomForestMachineLearningThread(Thread):
         e_mag_value = getattr(ev1, 'e_mag_value')
         e_depth = getattr(ev1, 'e_depth')
         df_i = getattr(ev1, 'dfI')
-        # df_ii = getattr(ev1, 'dfII')
-        # df_iii = getattr(ev1, 'dfIII')
+        df_ii = getattr(ev1, 'dfII')
+        df_iii = getattr(ev1, 'dfIII')
         df_iv = getattr(ev1, 'dfIV')
-        self.loading_status.configure(text="""  Determining cities included in the map """)
+        self.percentage_progress.configure(text="80%")
+        self.loading_status.configure(text="""  Determining cities included in the map...""")
         ev_map = mp.Map(upper_corner_lat, lower_corner_lat, upper_corner_long, lower_corner_long,
-                        e_latitude, e_longitude, e_mag_value, e_depth, df_i, df_iv)
-        # , df_ii, df_iii, df_iv
-
+                        e_latitude, e_longitude, e_mag_value, e_depth, df_i, df_ii, df_iii, df_iv)
         ev_map.determine_cities_included_in_map()
-        self.loading_status.configure(text="""  Mapping the earthquake event """)
+        self.percentage_progress.configure(text="90%")
+        self.loading_status.configure(text="""  Mapping the earthquake event...""")
         ev_map.map_earthquake_event()
-        self.loading_status.configure(text="""  Finish Mapping """)
+
 
 
 class App(tk.Tk):
@@ -143,8 +151,8 @@ class App(tk.Tk):
         self.pb.grid(row=6, columnspan=2)
 
         # Dummy data
-        self.dummy = ttk.Label(self.progress_frame, text="10%")
-        self.dummy.grid(row=7)
+        self.percentage_progress = ttk.Label(self.progress_frame, text="10%")
+        self.percentage_progress.grid(row=7)
 
         self.loading_status = ttk.Label(self.progress_frame, text="  Feeding the data into the model...")
         self.loading_status.grid(row=8)
@@ -166,7 +174,8 @@ class App(tk.Tk):
                                                                         self.e_ev_mag_value.get(),
                                                                         self.e_ev_depth.get(),
                                                                         self.e_ev_num_testimonies.get(),
-                                                                        self.loading_status)
+                                                                        self.loading_status,
+                                                                        self.percentage_progress)
             machine_learning_thread.start()
 
     def check_inputs(self):
@@ -178,31 +187,31 @@ class App(tk.Tk):
 
         res = checkIfEmpty(latitude, longitude, magnitude, depth, num_testimonies)
         if res == 1:
-            return
+            return 1
         else:
             res = checkIfQuantity(latitude, longitude, magnitude, depth, num_testimonies)
             if res == 1:
-                return
+                return 1
             else:
                 res = checkLatitudeRange(latitude)
                 if res == 1:
-                    return
+                    return 1
                 else:
                     res = checkLongitudeRange(longitude)
                     if res == 1:
-                        return
+                        return 1
                     else:
                         res = checkMagnitude(magnitude)
                         if res == 1:
-                            return
+                            return 1
                         else:
                             res = checkDepth(depth)
                             if res == 1:
-                                return
+                                return 1
                             else:
                                 res = checkTestimonies(num_testimonies)
                                 if res == 1:
-                                    return
+                                    return 1
                                 else:
                                     return 0
                                     # machine_learning_thread = self.random_forest_learn()
