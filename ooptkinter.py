@@ -63,7 +63,7 @@ class RandomForestMachineLearningThread(Thread):
         self.percentage_progress.configure(text="90%")
         self.loading_status.configure(text="""  Mapping the earthquake event...""")
         ev_map.map_earthquake_event()
-
+        print("Hello World")
 
 
 class App(tk.Tk):

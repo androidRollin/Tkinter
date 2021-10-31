@@ -44,6 +44,17 @@ class Map:
                                        (df_ph_city['lng'] < self.upper_corner_long) &
                                        (df_ph_city['lng'] > self.lower_corner_long)]
 
+    def color_ev_star_based_on_depth(self):
+        if self.e_depth <= 33:
+            return "red"
+        elif self.e_depth <= 70:
+            return "orange"
+        elif self.e_depth <= 150:
+            return "yellow"
+        elif self.e_depth <= 300:
+            return "green"
+        else:
+            return "blue"
 
     def map_earthquake_event(self):
         fig = plt.figure(figsize=(95, 50), dpi=20)
@@ -95,7 +106,7 @@ class Map:
         # Earthquake Intensity I, 76.5 Accurracy
         xpt, ypt = m(self.dfI['pt_longitude'], self.dfI['pt_latitude'])
         # m.plot(xpt, ypt, '.', markersize=24, color="whitesmoke", alpha=0.765, label='I')
-        m.plot(xpt, ypt, '.', markersize=marker_size, color=intensity_I_color, alpha=1, label='I')
+        m.plot(xpt, ypt, '.', markersize=marker_size, color=intensity_I_color, alpha=0.765, label='I')
 
         xpt, ypt = m(self.df_ph_city_filter['lng'], self.df_ph_city_filter['lat'])
         city_name = self.df_ph_city_filter['city']
@@ -105,7 +116,7 @@ class Map:
 
         PHILlat, PHILlon = self.e_latitude, self.e_longitude
         xpt, ypt = m(PHILlon, PHILlat)
-        m.plot(xpt, ypt, 'r*', markersize=48, label='epicenter', alpha=1.0)
+        m.plot(xpt, ypt, marker='*', color=self.color_ev_star_based_on_depth(), markersize=48, label='epicenter')
 
         # plt.text(xpt,ypt,'City',fontsize=12)
         # I = mpatches.Patch([],[], color="whitesmoke", marker = '.', markersize = 15, alpha = 0.765, label = 'I')
