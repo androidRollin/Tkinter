@@ -1,9 +1,11 @@
+import sys
 import threading
 import tkinter as tk
 from formfunctions import *
 from tkinter import ttk
 from threading import Thread
-
+from PIL import ImageTk, Image
+from tkinter import messagebox
 
 class RandomForestMachineLearningThread(Thread):
     def __init__(self, latitude, longitude, magnitude, depth, num_testimonies, loading_status, percentage_progress):
@@ -18,52 +20,56 @@ class RandomForestMachineLearningThread(Thread):
         print("Hello Machine Learning")
 
     def run(self):
-        self.percentage_progress.configure(text="10%")
-        self.loading_status.configure(text="  Loading Random Forest Models...")
-        import randomforestml as rf
-        self.percentage_progress.configure(text="20%")
-        self.loading_status.configure(text="  Processing coordinates in the map...")
-        ev1 = rf.RandomForest(self.latitude, self.longitude, self.magnitude, self.depth, self.num_testimonies)
-        ev1.get_all_points_in_box_map()
-        ev1.create_dataframe()
-        ev1.get_distance_from_ev_to_insert_in_df()
-        self.percentage_progress.configure(text="30%")
-        self.loading_status.configure(text="  Determining land area points in the map...")
-        ev1.filter_land_coordinates()
-        self.percentage_progress.configure(text="40%")
-        self.loading_status.configure(text="""  Classifying/Predicting "Not Felt" Intensity I coordinates...""")
-        ev1.predict_intensity_i()
-        self.percentage_progress.configure(text="50%")
-        self.loading_status.configure(text="""  Classifying/Predicting "Weak" Intensity II coordinates...""")
-        ev1.predict_intensity_ii()
-        self.percentage_progress.configure(text="60%")
-        self.loading_status.configure(text="""  Classifying/Predicting "Weak" Intensity III coordinates...""")
-        ev1.predict_intensity_iii()
-        self.percentage_progress.configure(text="70%")
-        self.loading_status.configure(text="""  Classifying/Predicting "Light" Intensity IV coordinates...""")
-        ev1.predict_intensity_iv()
-        import mapping as mp
-        upper_corner_lat = getattr(ev1, 'upper_corner_lat')
-        lower_corner_lat = getattr(ev1, 'lower_corner_lat')
-        upper_corner_long = getattr(ev1, 'upper_corner_long')
-        lower_corner_long = getattr(ev1, 'lower_corner_long')
-        e_latitude = getattr(ev1, 'e_latitude')
-        e_longitude = getattr(ev1, 'e_longitude')
-        e_mag_value = getattr(ev1, 'e_mag_value')
-        e_depth = getattr(ev1, 'e_depth')
-        df_i = getattr(ev1, 'dfI')
-        df_ii = getattr(ev1, 'dfII')
-        df_iii = getattr(ev1, 'dfIII')
-        df_iv = getattr(ev1, 'dfIV')
-        self.percentage_progress.configure(text="80%")
-        self.loading_status.configure(text="""  Determining cities included in the map...""")
-        ev_map = mp.Map(upper_corner_lat, lower_corner_lat, upper_corner_long, lower_corner_long,
-                        e_latitude, e_longitude, e_mag_value, e_depth, df_i, df_ii, df_iii, df_iv)
-        ev_map.determine_cities_included_in_map()
-        self.percentage_progress.configure(text="90%")
-        self.loading_status.configure(text="""  Mapping the earthquake event...""")
-        ev_map.map_earthquake_event()
-        print("Hello World")
+        # self.percentage_progress.configure(text="10%")
+        # self.loading_status.configure(text="  Loading Random Forest Models...")
+        # import randomforestml as rf
+        # self.percentage_progress.configure(text="20%")
+        # self.loading_status.configure(text="  Processing coordinates in the map...")
+        # ev1 = rf.RandomForest(self.latitude, self.longitude, self.magnitude, self.depth, self.num_testimonies)
+        # ev1.get_all_points_in_box_map()
+        # ev1.create_dataframe()
+        # ev1.get_distance_from_ev_to_insert_in_df()
+        # self.percentage_progress.configure(text="30%")
+        # self.loading_status.configure(text="  Determining land area points in the map...")
+        # ev1.filter_land_coordinates()
+        # self.percentage_progress.configure(text="40%")
+        # self.loading_status.configure(text="""  Classifying/Predicting "Not Felt" Intensity I coordinates...""")
+        # ev1.predict_intensity_i()
+        # self.percentage_progress.configure(text="50%")
+        # self.loading_status.configure(text="""  Classifying/Predicting "Weak" Intensity II coordinates...""")
+        # ev1.predict_intensity_ii()
+        # self.percentage_progress.configure(text="60%")
+        # self.loading_status.configure(text="""  Classifying/Predicting "Weak" Intensity III coordinates...""")
+        # ev1.predict_intensity_iii()
+        # self.percentage_progress.configure(text="70%")
+        # self.loading_status.configure(text="""  Classifying/Predicting "Light" Intensity IV coordinates...""")
+        # ev1.predict_intensity_iv()
+        # import mapping as mp
+        # upper_corner_lat = getattr(ev1, 'upper_corner_lat')
+        # lower_corner_lat = getattr(ev1, 'lower_corner_lat')
+        # upper_corner_long = getattr(ev1, 'upper_corner_long')
+        # lower_corner_long = getattr(ev1, 'lower_corner_long')
+        # e_latitude = getattr(ev1, 'e_latitude')
+        # e_longitude = getattr(ev1, 'e_longitude')
+        # e_mag_value = getattr(ev1, 'e_mag_value')
+        # e_depth = getattr(ev1, 'e_depth')
+        # df_i = getattr(ev1, 'dfI')
+        # df_ii = getattr(ev1, 'dfII')
+        # df_iii = getattr(ev1, 'dfIII')
+        # df_iv = getattr(ev1, 'dfIV')
+        # self.percentage_progress.configure(text="80%")
+        # self.loading_status.configure(text="""  Determining cities included in the map...""")
+        # ev_map = mp.Map(upper_corner_lat, lower_corner_lat, upper_corner_long, lower_corner_long,
+        #                 e_latitude, e_longitude, e_mag_value, e_depth, df_i, df_ii, df_iii, df_iv)
+        # ev_map.determine_cities_included_in_map()
+        # self.percentage_progress.configure(text="90%")
+        # self.loading_status.configure(text="""  Mapping the earthquake event...""")
+        # ev_map.map_earthquake_event()
+        # print("Hello World")
+        import testbasemap as tbm
+        tbm.show_map()
+        sys.exit()
+
 
 
 class App(tk.Tk):
@@ -168,6 +174,7 @@ class App(tk.Tk):
         else:
             progress_bar_thread = self.display_progress_bar
             t1 = threading.Thread(target=progress_bar_thread)
+            t1.setDaemon(True)
             t1.start()
             machine_learning_thread = RandomForestMachineLearningThread(self.e_ev_latitude.get(),
                                                                         self.e_ev_longitude.get(),
@@ -176,7 +183,10 @@ class App(tk.Tk):
                                                                         self.e_ev_num_testimonies.get(),
                                                                         self.loading_status,
                                                                         self.percentage_progress)
+            machine_learning_thread.setDaemon(True)
             machine_learning_thread.start()
+
+            self.monitor(machine_learning_thread)
 
     def check_inputs(self):
         latitude = self.e_ev_latitude.get()
@@ -218,16 +228,21 @@ class App(tk.Tk):
                                     # t1 = threading.Thread(target=machine_learning_thread)
                                     # t1.start()
                                     # self.monitor(t1)
+    def stop_show_map(self):
+        self.form_frame.tkraise()
+        self.pb.stop()
 
     def monitor(self, download_thread):
         """ Monitor the download thread """
         if download_thread.is_alive():
             self.after(100, lambda: self.monitor(download_thread))
         else:
-            pass
             print("end")
+            self.stop_show_map()
             # self.stop_downloading()
             # self.set_picture(download_thread.picture_file)
+
+
 
     def display_progress_bar(self):
         # place the progress frame
@@ -244,5 +259,39 @@ class App(tk.Tk):
 
 
 if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+    splash_root = Tk()
+    splash_root.title("Splash Screen")
+    splash_root.geometry("650x350")
+    splash_root.eval('tk::PlaceWindow . center')
+    center_splash(splash_root)
+
+    # Hide Title Bar
+    splash_root.overrideredirect(True)
+
+
+    path = "dost_logo.jpg"
+
+    img = ImageTk.PhotoImage(Image.open(path))
+
+    panel = tk.Label(splash_root, image=img)
+
+    panel.pack(side= "bottom", fill="both", expand = "yes")
+
+
+    def main_window():
+        splash_root.destroy()
+        app = App()
+
+        def on_closing():
+            if messagebox.askokcancel("Quit", "Do you want to quit?"):
+                app.destroy()
+
+        app.protocol("WM_DELETE_WINDOW", on_closing)
+        app.mainloop()
+
+
+
+    # Splash Screen Timer
+    splash_root.after(3000, main_window)
+
+    mainloop()
