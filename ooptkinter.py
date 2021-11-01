@@ -7,6 +7,7 @@ from threading import Thread
 from PIL import ImageTk, Image
 from tkinter import messagebox
 
+
 class RandomForestMachineLearningThread(Thread):
     def __init__(self, latitude, longitude, magnitude, depth, num_testimonies, loading_status, percentage_progress):
         super().__init__()
@@ -71,14 +72,13 @@ class RandomForestMachineLearningThread(Thread):
         sys.exit()
 
 
-
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
         # configure the root window
         self.title("DOST-PHIVOLCS")
-        self.iconbitmap("PHIVOLCS.ico")
+        self.iconbitmap("img_resource/PHIVOLCS.ico")
         self.eval('tk::PlaceWindow . center')
         self.geometry("350x280")
         center(self)
@@ -228,6 +228,7 @@ class App(tk.Tk):
                                     # t1 = threading.Thread(target=machine_learning_thread)
                                     # t1.start()
                                     # self.monitor(t1)
+
     def stop_show_map(self):
         self.form_frame.tkraise()
         self.pb.stop()
@@ -241,8 +242,6 @@ class App(tk.Tk):
             self.stop_show_map()
             # self.stop_downloading()
             # self.set_picture(download_thread.picture_file)
-
-
 
     def display_progress_bar(self):
         # place the progress frame
@@ -268,14 +267,13 @@ if __name__ == "__main__":
     # Hide Title Bar
     splash_root.overrideredirect(True)
 
-
-    path = "dost_logo.jpg"
+    path = "img_resource/PHIVOLCS_DOST_BANNER.jpg"
 
     img = ImageTk.PhotoImage(Image.open(path))
 
     panel = tk.Label(splash_root, image=img)
 
-    panel.pack(side= "bottom", fill="both", expand = "yes")
+    panel.pack(side="bottom", fill="both", expand="yes")
 
 
     def main_window():
@@ -288,7 +286,6 @@ if __name__ == "__main__":
 
         app.protocol("WM_DELETE_WINDOW", on_closing)
         app.mainloop()
-
 
 
     # Splash Screen Timer
