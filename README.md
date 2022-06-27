@@ -1,3 +1,6 @@
 # Capstone Project
 Tectonic Earthquake Rapid Intensity Prediction and Mapping using Citizen Science and Multi-Class Random Forest Classification with Spatial Characteristics 
 Machine Learning System Application
+
+Summary 
+  - Earthquake intense shaking results to different earthquake intensity reports and its assessment used to be a slow process, by means of a personalized survey. Reported felt intensity by Citizen Science can only be the reliable source of intensity level data on a specific location of an earthquake event and machine learning can serve as validation in Citizen Science wide scale approaches. In this study, an android mobile application was developed as a tool for earthquake information and citizen reports. And used a Multi-Class Random Forest Classification with Spatial Characteristics in creating a probabilistic iso-intensity map using the EMSC globally collected earthquake intensity felt testimonies. The developed application was evaluated as high quality in its intent as a tool and the machine learning presented in this study delivers a great potential in creating a probabilistic and visual information of the shaking intensity of an earthquake event in the Philippines.
